@@ -1,7 +1,7 @@
 FROM nginx:1.15.5
 
 # install tools
-RUN apt-get update && apt-get install -y procps htop \
+RUN apt-get update && apt-get install --no-install-recommends -y procps htop \
     && apt-get purge -y --auto-remove \
     && rm -r /var/lib/apt/lists/*
 #for using with php-fpm
