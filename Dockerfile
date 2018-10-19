@@ -10,7 +10,7 @@ ARG user_NAME=www-user
 ARG group_UID=3000
 ARG group_NAME=www-user
 # to use socket don't forget set in site conf file path to socket:
-# fastcgi_pass: unix:/var/run/php-fpm.sock;
+# i.e. fastcgi_pass: unix:/var/run/php-fpm.sock;
 
 RUN set -ex \
  && addgroup --system --gid $group_UID $group_NAME \
@@ -20,7 +20,7 @@ RUN mkdir -p /etc/nginx/sites-enabled \
  && mkdir -p /var/www
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-COPY conf/default.conf /etc/nginx/nginx.d/
+COPY conf/nginx.d/default.conf /etc/nginx/nginx.d/
 
 RUN sed -i -e "s/^user.*/user $user_NAME;/g" /etc/nginx/nginx.conf
 WORKDIR /var/www
