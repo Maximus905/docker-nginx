@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# try to create user for working nginx via socket
+# this user should be set in nginx.conf like: user www-user;
+set -e
+# create user for working via socket
+userName=$(getent passwd $USER_NAME | cut -d: -f1)
+userId=$(getent passwd $USER_UID | cut -d: -f3)
+group=$(getent group $GROUP_NAME | cut -d: -f1)
+groupId=$(getent group $GROUP_UID | cut -d: -f3)
+
+if [[ $group == $GROUP_NAME && $groupId == $GROUP_UID ]]; then
+	echo "Group $GROUP_NAME (UID $GROUP_UID) already exists"
+elif [ -n "$group" ]; then
+	echo "Error! Can't create group $GROUP_NAME. Group already exists"
+	exit 1
+elif [ -n "$groupId" ]; then
+	echo "Error! Can't create group $GROUP_NAME. Group ID $GROUP_UID already using"
+	exit 1
+else
+	addgroup --gid $GROUP_UID $GROUP_NAME
+fi
+
+if [[ $userName == $USER_NAME && $userId == $USER_UID ]]; then
+	echo "User $USER_NAME (UID $USER_UID) already exists"
+elif [ -n "$userName" ]; then
+	echo "Error! Can't create user $USER_NAME. User already exists"
+	exit 1
+elif [ -n "$userId" ]; then
+	echo "Error! Can't create user $USER_NAME. User ID $USER_UID already using"
+	exit 1
+else
+	adduser --uid $USER_UID --system --ingroup $GROUP_NAME $USER_NAME
+fi
+
+#set created user in nginx.conf
+sed -i -e "s/^user.*/user $USER_NAME $GROUP_NAME;/g" $NGINX_CONF
+
+exec "$@"
