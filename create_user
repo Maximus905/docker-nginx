@@ -33,7 +33,7 @@ else
 	adduser --uid $USER_UID --system --ingroup $GROUP_NAME $USER_NAME
 fi
 
-#set created user in nginx.conf
-sed -i -e "s/^user.*/user $USER_NAME $GROUP_NAME;/g" $NGINX_CONF
+#set created user in nginx.conf (doesn't work if nginx.conf is mounted in bind mode)
+#sed -i -e "s/^user.*/user $USER_NAME $GROUP_NAME;/g" $NGINX_CONF
 
 exec "$@"

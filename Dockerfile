@@ -23,6 +23,5 @@ RUN chmod u+x /usr/local/bin/create_user
 RUN mkdir -p /etc/nginx/sites-enabled \
  && mkdir -p /var/www
 ENTRYPOINT ["create_user"]
-#RUN sed -i -e "s/^user.*/user $USER_NAME;/g" $NGINX_CONF
 WORKDIR /var/www
 CMD ["nginx", "-g", "daemon off;"]
